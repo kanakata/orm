@@ -1,7 +1,3 @@
 <?php
-
-include "./Orm.php";
-
-$data = new Orm();
-$data->MySql("localhost", "nyathi", "root", "");
-$data->select();
+include "./orm.php";
+(new Orm())->table("products")->select()->find();
