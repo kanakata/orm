@@ -1,12 +1,20 @@
-# orm usage
+# Simple php based orm
 
-## to make changes run
+## Available database support include:
+
+- mysql
+- pgsql
+- sqlite
+
+# Usage
+
+## To make changes run:
 
 ```cmd
 php run
 ```
 
-## select
+## Selecting data
 
 ```php
 // fetch a single column
@@ -16,43 +24,37 @@ php run
 (new Orm())->table("table_name")->select()->find_all()
 ```
 
-## insert
+## Insert data
 
 ```php
 
 ```
 
-## delete
+## Deleting data
 
 ```php
 
 ```
 
-## update
+## Updating data
 
 ```php
 
 ```
 
-## upsert
-
-```php
-
-```
-
-## create database
+## Create a database
 
 ```php
 (new Orm())->create_database("database_name")
 ```
 
-## drop database
+## Dropping a database
 
 ```php
 (new Orm())->drop_database("database_name")
 ```
 
-## create table
+## Creating a table
 
 ```php
 (new Orm())->create_table("table_name", function(){
@@ -62,7 +64,7 @@ php run
 })
 ```
 
-## drop table
+## Dropping table
 
 ```php
 (new Orm())->drop_table("database_name")
