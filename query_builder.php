@@ -25,6 +25,8 @@ class QueryBuilder
     private string $query;
     private string $create_database;
     private string $create_table;
+    private array $insert_bind_params;
+    private array $insert_operators;
     private ?PDO $database_connection = null;
     public function __construct()
     {
@@ -63,7 +65,7 @@ class QueryBuilder
             if (isset($this->insert)) {
                 $data = $this->select($this->insert_columns[0])
                     ->table($this->table)
-                    ->where($this->insert_columns, $this->bind_params, [])
+                    ->where($this->insert_columns, $this->insert_bind_params, $this->insert_operators)
                     ->$this->find();
                 if (!empty($data)) {
                 } else {
@@ -231,13 +233,12 @@ class QueryBuilder
     public function insert(array $columns, array $data): QueryBuilder
     {
         if (count($columns) == count($data) && !empty($columns) && !empty($data)) {
-            $this->bind_params = $data;
-            $this->insert_columns = $columns;
-            $this->insert_table = $this->table;
-
+            [$this->insert_bind_params, $this->insert_columns, $this->insert_table] = [$data, $columns,  $this->table];
+            
             $bindings = [];
             for ($i = 0; $i <= (count($data) - 1); $i++) {
                 array_push($bindings, "?");
+                $this->insert_operators[$i] = "=";
             }
 
             $bindings = implode(",", $bindings);
