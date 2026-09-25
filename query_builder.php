@@ -25,8 +25,6 @@ class QueryBuilder
     private string $query;
     private string $create_database;
     private string $create_table;
-    private array $insert_bind_params;
-    private array $insert_operators;
     private ?PDO $database_connection = null;
     public function __construct()
     {
@@ -65,7 +63,7 @@ class QueryBuilder
             if (isset($this->insert)) {
                 $data = $this->select($this->insert_columns[0])
                     ->table($this->table)
-                    ->where($this->insert_columns, $this->insert_bind_params, $this->insert_operators)
+                    ->where($this->insert_columns, $this->bind_params, [])
                     ->$this->find();
                 if (!empty($data)) {
                 } else {
@@ -175,9 +173,9 @@ class QueryBuilder
                 isset($this->drop_database):
 
                     return 
-                    (isset($this->insert) ? $this->insert : "").
-                    (isset($this->update) ? ($this->update . $this->table.$this->set . $this->where) : "").
-                    (isset($this->delete) ? ($this->delete . $this->table.$this->where) : "").
+                    (isset($this->insert) ? $this->insert: "").
+                    (isset($this->update) ? ($this->update . $this->table.$this->set . $this->where): "").
+                    (isset($this->delete) ? ($this->delete . $this->table . $this->where): "").
                     (isset($this->drop_table) ? $this->drop_table : "").
                     (isset($this->create_database) ? $this->create_database : "").
                     (isset($this->create_table) ? $this->create_table : "").
@@ -192,7 +190,7 @@ class QueryBuilder
     // crud
     public function select(mixed ...$columns): QueryBuilder
     {
-        $this->select = "SELECT "  .  (!empty($columns) ? "`" . implode("`,`",$columns) . "`" : " * ") . " FROM ";
+        $this->select = "SELECT "  .  (!empty($columns) ? "`" . implode("`,`",$columns) . "`": " * ") . " FROM ";
         return $this;
     }
     public function update(): QueryBuilder
@@ -233,12 +231,13 @@ class QueryBuilder
     public function insert(array $columns, array $data): QueryBuilder
     {
         if (count($columns) == count($data) && !empty($columns) && !empty($data)) {
-            [$this->insert_bind_params, $this->insert_columns, $this->insert_table] = [$data, $columns,  $this->table];
-            
+            $this->bind_params = $data;
+            $this->insert_columns = $columns;
+            $this->insert_table = $this->table;
+
             $bindings = [];
             for ($i = 0; $i <= (count($data) - 1); $i++) {
                 array_push($bindings, "?");
-                $this->insert_operators[$i] = "=";
             }
 
             $bindings = implode(",", $bindings);
@@ -316,14 +315,14 @@ class QueryBuilder
     {
         $count = 0;
         foreach($columns as $column){
-            $this->order_by .= " ORDER BY " . $column . " " . strtoupper($order[$count++]);    
+            $this->order_by .= " ORDER BY ". $column . " " . strtoupper($order[$count++]);    
         }
         return $this;
     }
     public function between(mixed $column, int $start, int $end): QueryBuilder
     {
         $this->bind_params = [$start, $end];
-        $this->between = (!empty($column) && !empty($start) && !empty($end)) ?  " WHERE $column BETWEEN " . "?" . " AND " . "?" : throw new Exception("items in between are empty");
+        $this->between = (!empty($column) && !empty($start) && !empty($end)) ?  " WHERE $column BETWEEN " . "?". " AND " . "?" : throw new Exception("items in between are empty");
         return $this;
     }
     public function create_database(string $database_name): QueryBuilder
