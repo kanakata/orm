@@ -8,12 +8,6 @@
 
 # Usage
 
-## To make changes run:
-
-```cmd
-php run
-```
-
 ## Selecting data
 
 ```php
