@@ -173,9 +173,9 @@ class QueryBuilder
                 isset($this->drop_database):
 
                     return 
-                    (isset($this->insert) ? $this->insert : "").
-                    (isset($this->update) ? ($this->update . $this->table.$this->set . $this->where) : "").
-                    (isset($this->delete) ? ($this->delete . $this->table.$this->where) : "").
+                    (isset($this->insert) ? $this->insert: "").
+                    (isset($this->update) ? ($this->update . $this->table.$this->set . $this->where): "").
+                    (isset($this->delete) ? ($this->delete . $this->table . $this->where): "").
                     (isset($this->drop_table) ? $this->drop_table : "").
                     (isset($this->create_database) ? $this->create_database : "").
                     (isset($this->create_table) ? $this->create_table : "").
@@ -190,7 +190,7 @@ class QueryBuilder
     // crud
     public function select(mixed ...$columns): QueryBuilder
     {
-        $this->select = "SELECT "  .  (!empty($columns) ? "`" . implode("`,`",$columns) . "`" : " * ") . " FROM ";
+        $this->select = "SELECT "  .  (!empty($columns) ? "`" . implode("`,`",$columns) . "`": " * ") . " FROM ";
         return $this;
     }
     public function update(): QueryBuilder
@@ -315,14 +315,14 @@ class QueryBuilder
     {
         $count = 0;
         foreach($columns as $column){
-            $this->order_by .= " ORDER BY " . $column . " " . strtoupper($order[$count++]);    
+            $this->order_by .= " ORDER BY ". $column . " " . strtoupper($order[$count++]);    
         }
         return $this;
     }
     public function between(mixed $column, int $start, int $end): QueryBuilder
     {
         $this->bind_params = [$start, $end];
-        $this->between = (!empty($column) && !empty($start) && !empty($end)) ?  " WHERE $column BETWEEN " . "?" . " AND " . "?" : throw new Exception("items in between are empty");
+        $this->between = (!empty($column) && !empty($start) && !empty($end)) ?  " WHERE $column BETWEEN " . "?". " AND " . "?" : throw new Exception("items in between are empty");
         return $this;
     }
     public function create_database(string $database_name): QueryBuilder
