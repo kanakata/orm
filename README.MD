@@ -17,11 +17,26 @@ php run
 ## Selecting data
 
 ```php
-// fetch a single column
+
 (new Orm())->table("table_name")->select()->find()
 
-// fetch a all columns
 (new Orm())->table("table_name")->select()->find_all()
+
+(new QueryBuilder())->table("products")->select()->order_by(["id"], ["desc"])->find_all();
+
+(new QueryBuilder())->table("products")->select()->order_by(["id"], ["desc"])->limit(10,2)->find_all();
+
+(new QueryBuilder())->table("products")->select()->limit(10,2)->find_all();
+
+(new QueryBuilder())->table("products")->count()->count_column();
+
+(new QueryBuilder())->table("products")->avg("id")->count_column();
+
+(new QueryBuilder())->table("products")->sum("id")->count_column();
+
+(new QueryBuilder())->table("products")->min("id")->count_column();
+
+(new QueryBuilder())->table("products")->max("id")->count_column();
 ```
 
 ## Insert data
